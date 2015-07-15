@@ -5,6 +5,8 @@
 # Used for exon deletions containing 4 crisprs and 3 genotyping primers but can be edited for other combinations
 # Currently set up for mice but can be adapted for other species by editing the script
 # Crisprs are currently all on the plus strand (as that's how they are in iMits but the strand for primers are auto-detected accordingly for the genbank file
+# Update 2015-07-15 - now gets and displays repeat information from ensembl
+
 
 ### file format:
 # gene_id	chr	region_loc_start	region_loc_end	crispr1_seq	crispr2_seq	crispr3_seq	crispr4_seq	primer1_seq	primer2_seq	primer3_seq
@@ -95,6 +97,18 @@ foreach $name (@array) { # loop through each file line and create a genbank file
       $seq_obj->add_SeqFeature($feat);
       $c++;
    }
+
+   my @repeats = @{ $slice->get_all_RepeatFeatures() };
+   foreach my $repeat (@repeats) {
+      $feat = new Bio::SeqFeature::Generic(-start       =>  $repeat->start(),
+                                        -end         => $repeat->end(),
+                                        -strand      => 1,
+                                        -primary_tag => 'repeat_region',
+                                        -tag => {note     => $repeat->display_id() } );
+      $seq_obj->add_SeqFeature($feat);    
+      #$seq_obj->display_id(), $repeat->start(), $repeat->end() );
+   }
+
 
    ### write out the final file
    $out->write_seq($seq_obj);

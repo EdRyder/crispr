@@ -106,7 +106,7 @@ foreach $name (@array) { # loop through each file line and create a genbank file
                                         -primary_tag => 'repeat_region',
                                         -tag => {note     => $repeat->display_id() } );
       $seq_obj->add_SeqFeature($feat);    
-      #$seq_obj->display_id(), $repeat->start(), $repeat->end() );
+      
    }
 
 

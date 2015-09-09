@@ -6,7 +6,7 @@
 # Currently set up for mice but can be adapted for other species by editing the script
 # Crisprs are currently all on the plus strand (as that's how they are in iMits but the strand for primers are auto-detected accordingly for the genbank file
 # Update 2015-07-15 - now gets and displays repeat information from ensembl
-
+# Update 2015-09-09 - now gets and displays exon information from ensembl
 
 ### file format:
 # gene_id	chr	region_loc_start	region_loc_end	crispr1_seq	crispr2_seq	crispr3_seq	crispr4_seq	primer1_seq	primer2_seq	primer3_seq
@@ -98,6 +98,7 @@ foreach $name (@array) { # loop through each file line and create a genbank file
       $c++;
    }
 
+   ### get repeat features 
    my @repeats = @{ $slice->get_all_RepeatFeatures() };
    foreach my $repeat (@repeats) {
       $feat = new Bio::SeqFeature::Generic(-start       =>  $repeat->start(),
@@ -109,6 +110,17 @@ foreach $name (@array) { # loop through each file line and create a genbank file
       
    }
 
+   ### get exons  
+   my @exons = @{ $slice->get_all_Exons() };       
+   foreach my $exon (@exons) {                     
+      $feat = new Bio::SeqFeature::Generic(-start       =>  $exon->start(),
+                                        -end         => $exon->end(),
+                                        -strand      => $exon->strand(),
+                                        -primary_tag => 'exon',
+                                        -tag => {note     => $exon->display_id() } );
+      $seq_obj->add_SeqFeature($feat);    
+      #$seq_obj->display_id(), $repeat->start(), $repeat->end() );
+   }
 
    ### write out the final file
    $out->write_seq($seq_obj);

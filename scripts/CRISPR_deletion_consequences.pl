@@ -4,7 +4,7 @@
 # Takes a list of genes and crispr locations and outputs a file with the consequences to the gene
 # Works at the exon level purely on locations. Does not calculate whether a stop codon is introduced from an indel, for example, as that requires sequence and allele input. 
 # Meant for gene-specific exon deletions.
-# Usage: perl gene_structure11.pl infile outfile 
+# Usage: perl CRISPR_deletion_consequences.pl infile outfile 
 # File format (tabbed) = gene_name, start location, end location, source, project
 # eg Zfp712  67041242        67042371        Experimental      WTSI_project_A
 # Chr is not included as that information will be extracted from the gene object
